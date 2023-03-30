@@ -22,25 +22,14 @@ Your tests will depend on data stored in PostgreSQL to run.
 If seed data is provided (or you already created it), you can skip this step.
 
 ```sql
--- EXAMPLE
--- (file: spec/seeds_{table_name}.sql)
-
--- Write your SQL seed here. 
-
--- First, you'd need to truncate the table - this is so our table is emptied between each test run,
--- so we can start with a fresh state.
+-- truncate the table - this is so our table is emptied between each test run
 -- (RESTART IDENTITY resets the primary key)
 
-TRUNCATE TABLE recipes RESTART IDENTITY; -- replace with your own table name.
+TRUNCATE TABLE recipes RESTART IDENTITY;
 
--- Below this line there should only be `INSERT` statements.
--- Replace these statements with your own seed title
-
-INSERT INTO recipes (name, cooking_time, rating) VALUES ('Cookies', '30', '5');
+INSERT INTO recipes (name, cooking_time, rating) VALUES ('Soup', '30', '2');
 INSERT INTO recipes (name, cooking_time, rating) VALUES ('Pizza', '25', '5');
 ```
-
-Run this SQL file on the database to truncate (empty) the table, and insert the seed data. Be mindful of the fact any existing records in the table will be deleted.
 
 ```bash
 psql -h 127.0.0.1 recipe_directory_test < seeds_recipes.sql
@@ -76,7 +65,7 @@ Define the attributes of your Model class. You can usually map the table columns
 # Model class
 # (in lib/recipe.rb)
 
-class Album
+class Recipe
   attr_accessor :id, :name, :cooking_time, :rating
 end
 
@@ -132,17 +121,17 @@ repo = RecipeRepository.new
 recipes = repo.all
 recipes.length # =>  2
 recipes[0].id # =>  '1' 
-recipes[0].name # =>  'Cookies' 
+recipes[0].name # =>  'Soup' 
 recipes[0].cooking_time # =>  '30'  
-recipes[0].rating # => '5'
+recipes[0].rating # => '2'
 
 
 # 2
 # get one recipe
 repo = RecipeRepository.new
-recipe = repo.find(1)
-recipe[0].name # =>  'Cookies' 
-recipe[0].cooking_time # =>  '30'  
+recipe = repo.find(2)
+recipe[0].name # =>  'Pizza' 
+recipe[0].cooking_time # =>  '25'  
 recipe[0].rating # => '5'
 
 ```
@@ -160,15 +149,15 @@ This is so you get a fresh table contents every time you run the test suite.
 
 # file: spec/student_repository_spec.rb
 
-def reset_students_table
+def reset_recipes_table
   seed_sql = File.read('spec/seeds_students.sql')
-  connection = PG.connect({ host: '127.0.0.1', dbname:  'albums' })
+  connection = PG.connect({ host: '127.0.0.1', dbname:  'recipe_directory_test' })
   connection.exec(seed_sql)
 end
 
-describe StudentRepository do
+describe RecipeDirectory do
   before(:each) do 
-    reset_students_table
+    reset_recipes_table
   end
 
   # (your tests will go here).

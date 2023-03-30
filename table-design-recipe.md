@@ -63,7 +63,7 @@ rating: int
 
 CREATE TABLE recipes (
   id SERIAL PRIMARY KEY,
-  title text,
+  name text,
   cooking_time int,
   rating int
 );
@@ -72,5 +72,5 @@ CREATE TABLE recipes (
 ## 5. Create the table.
 
 ```bash
-psql -h 127.0.0.1 database_name < albums_table.sql
+psql -h 127.0.0.1 database_name < recipes_table.sql
 ```
